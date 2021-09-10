@@ -11,12 +11,15 @@ class Profile():
     def __init__(self):
 
         self.id = 0
-        self.auth = AUTH_ALG_OPEN
-        self.akm = [AKM_TYPE_NONE]
-        self.cipher = CIPHER_TYPE_NONE
-        self.ssid = None
-        self.bssid = None
-        self.key = None
+        self.auth = Auth.OPEN
+        self.akm = [AKM.NONE]
+        self.cipher = Cipher.NONE
+        self.ssid: str = None
+        self.bssid: str = None
+        self.key: str = None
+        self.signal: int = None
+        self.freq: int = None
+
 
     def process_akm(self):
 

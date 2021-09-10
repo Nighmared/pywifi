@@ -39,58 +39,57 @@ DOT11_MAC_ADDRESS = c_ubyte * 6
 native_wifi = windll.wlanapi
 
 status_dict = [
-    IFACE_INACTIVE,
-    IFACE_CONNECTED,
-    IFACE_CONNECTED,
-    IFACE_DISCONNECTED,
-    IFACE_DISCONNECTED,
-    IFACE_CONNECTING,
-    IFACE_CONNECTING,
-    IFACE_CONNECTING
+    Iface.INACTIVE,
+    Iface.CONNECTED,
+    Iface.CONNECTED,
+    Iface.DISCONNECTED,
+    Iface.DISCONNECTED,
+    Iface.CONNECTING,
+    Iface.CONNECTING,
+    Iface.CONNECTING
 ]
-
 auth_value_to_str_dict = {
-    AUTH_ALG_OPEN: 'open',
-    AUTH_ALG_SHARED: 'shared'
+    Auth.OPEN: 'open',
+    Auth.SHARED: 'shared'
 }
 
 auth_str_to_value_dict = {
-    'open': AUTH_ALG_OPEN,
-    'shared': AUTH_ALG_SHARED
+    'open': Auth.OPEN,
+    'shared': Auth.SHARED
 }
 
 akm_str_to_value_dict = {
-    'NONE': AKM_TYPE_NONE,
-    'WPA': AKM_TYPE_WPA,
-    'WPAPSK': AKM_TYPE_WPAPSK,
-    'WPA2': AKM_TYPE_WPA2,
-    'WPA2PSK': AKM_TYPE_WPA2PSK,
-    'OTHER': AKM_TYPE_UNKNOWN
+    'NONE': AKM.NONE,
+    'WPA': AKM.WPA,
+    'WPAPSK': AKM.WPAPSK,
+    'WPA2': AKM.WPA2,
+    'WPA2PSK': AKM.WPA2PSK,
+    'OTHER': AKM.UNKNOWN
 }
 
 akm_value_to_str_dict = {
-    AKM_TYPE_NONE: 'NONE',
-    AKM_TYPE_WPA: 'WPA',
-    AKM_TYPE_WPAPSK: 'WPAPSK',
-    AKM_TYPE_WPA2: 'WPA2',
-    AKM_TYPE_WPA2PSK: 'WPA2PSK',
-    AKM_TYPE_UNKNOWN: 'OTHER'
+    AKM.NONE: 'NONE',
+    AKM.WPA: 'WPA',
+    AKM.WPAPSK: 'WPAPSK',
+    AKM.WPA2: 'WPA2',
+    AKM.WPA2PSK: 'WPA2PSK',
+    AKM.UNKNOWN: 'OTHER'
 }
 
 cipher_str_to_value_dict = {
-    'NONE': CIPHER_TYPE_NONE,
-    'WEP': CIPHER_TYPE_WEP,
-    'TKIP': CIPHER_TYPE_TKIP,
-    'AES': CIPHER_TYPE_CCMP,
-    'OTHER': CIPHER_TYPE_UNKNOWN
+    'NONE': Cipher.NONE,
+    'WEP': Cipher.WEP,
+    'TKIP': Cipher.TKIP,
+    'AES': Cipher.CCMP,
+    'OTHER': Cipher.UNKNOWN
 }
 
 cipher_value_to_str_dict = {
-    CIPHER_TYPE_NONE: 'NONE',
-    CIPHER_TYPE_WEP: 'WEP',
-    CIPHER_TYPE_TKIP: 'TKIP',
-    CIPHER_TYPE_CCMP: 'AES',
-    CIPHER_TYPE_UNKNOWN: 'UNKNOWN'
+    Cipher.NONE: 'NONE',
+    Cipher.WEP: 'WEP',
+    Cipher.TKIP: 'TKIP',
+    Cipher.CCMP: 'AES',
+    Cipher.UNKNOWN: 'UNKNOWN'
 }
 
 class WLAN_INTERFACE_INFO(Structure):
@@ -288,8 +287,8 @@ class WifiUtil():
                     akm = self._get_akm(networks[i].dot11DefaultCipherAlgorithm)
                     auth_alg = self._get_auth_alg(networks[i].dot11DefaultAuthAlgorithm)
                 else:
-                    akm = [AKM_TYPE_NONE]
-                    auth_alg = [AUTH_ALG_OPEN]
+                    akm = [AKM.NONE]
+                    auth_alg = [Auth.OPEN]
 
                 for j in range(bss_list.contents.dwNumberOfItems):
                     network = Profile()
@@ -335,7 +334,7 @@ class WifiUtil():
         profile_data = {}
         profile_data['ssid'] = params.ssid
 
-        if AKM_TYPE_NONE in params.akm:
+        if AKM.NONE in params.akm:
             profile_data['auth'] = auth_value_to_str_dict[params.auth]
             profile_data['encrypt'] = "none"
         else:
@@ -366,7 +365,7 @@ class WifiUtil():
                     </authEncryption>
         """
 
-        if AKM_TYPE_NONE not in params.akm:
+        if AKM.NONE not in params.akm:
             xml += """<sharedKey>
                         <keyType>passPhrase</keyType>
                         <protected>{protected}</protected>
@@ -437,12 +436,12 @@ class WifiUtil():
             profile.akm = []
             if auth not in akm_str_to_value_dict:
                 if auth not in auth_str_to_value_dict:
-                    profile.auth = AUTH_ALG_OPEN
+                    profile.auth = Auth.OPEN
                 else:
                     profile.auth = auth_str_to_value_dict[auth]
-                    profile.akm.append(AKM_TYPE_NONE)
+                    profile.akm.append(AKM.NONE)
             else:
-                    profile.auth = AUTH_ALG_OPEN
+                    profile.auth = Auth.OPEN
                     profile.akm.append(akm_str_to_value_dict[auth])
 
             profile_list.append(profile)
@@ -618,9 +617,9 @@ class WifiUtil():
 
         auth_alg = []
         if auth_val in [1, 3, 4, 6, 7]:
-            auth_alg.append(AUTH_ALG_OPEN)
+            auth_alg.append(Auth.OPEN)
         elif auth_val == 2:
-            auth_alg.append(AUTH_ALG_SHARED)
+            auth_alg.append(Auth.SHARED)
 
         return auth_alg
 
@@ -628,8 +627,8 @@ class WifiUtil():
 
         akm = []
         if akm_val == 2:
-            akm.append(AKM_TYPE_WPAPSK)
+            akm.append(AKM.WPAPSK)
         elif akm_val == 4:
-            akm.append(AKM_TYPE_WPA2PSK)
+            akm.append(AKM.WPA2PSK)
 
         return akm
